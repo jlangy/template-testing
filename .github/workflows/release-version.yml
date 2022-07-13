@@ -1,0 +1,58 @@
+name: Release Version
+on: 
+  workflow_dispatch:
+  release:
+    types: [published]
+
+env: 
+  HELM_CHART_NAME: vue-3
+  OPENSHIFT_NAMESPACE: jlangy2-dev
+  IMAGE_NAME: vue-3-nginx
+  
+jobs:
+  build:
+      name: Build image
+      runs-on: ubuntu-20.04
+      steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 14
+      - name: Build Image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ env.IMAGE_NAME }}
+          tags: latest ${{ github.event.release.tag_name }}
+          containerfiles: |
+            ./Dockerfile
+
+      - name: Push To github
+        id: push-to-github
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ghcr.io/${{ github.repository }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+  publish:
+    name:  Publish to openshift
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v2
+      - name: Authenticate and set context
+        uses: redhat-actions/oc-login@v1
+
+        with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          namespace: ${{ env.OPENSHIFT_NAMESPACE }}
+      
+      - name: build-image
+        working-directory: ./helm/vue-nginx
+        run: |
+          oc version
+          helm upgrade --install ${{ env.HELM_CHART_NAME }} . --set image.tag=${{ github.event.release.tag_name }}

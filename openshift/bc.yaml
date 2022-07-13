@@ -1,0 +1,19 @@
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: vue-3
+  labels:
+    app: vue-3
+spec:
+  source:
+    type: Git
+    git:
+      uri: https://github.com/jlangy/vue-3-nginx
+  strategy:
+    type: Docker                      
+    dockerStrategy:
+      dockerfilePath: Dockerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: jons-vue-3:latest
