@@ -4,7 +4,7 @@
 
 replicaCount: 1
 image:
-  repository: ghcr.io/jlangy/vue-3-nginx/vue-3-nginx
+  repository: ghcr.io/jlangy/template-testing/vue-3-nginx
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: latest
@@ -47,7 +47,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: vue-helm-jlangy2-dev.apps.sandbox.x8i5.p1.openshiftapps.com
+    - host: http://test-route-jlangy2-dev.apps.sandbox-m2.ll9k.p1.openshiftapps.com
       paths:
         - path: /
           pathType: ImplementationSpecific
