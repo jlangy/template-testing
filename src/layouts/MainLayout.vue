@@ -2,8 +2,11 @@
 import '@bcgov/bootstrap-theme/dist/css/bootstrap-theme.min.css';
 import 'common-lib-vue/dist/common-lib-vue.css';
 import {
-	Header, Footer 
+	Header, Footer
 } from 'common-lib-vue';
+import {
+	version 
+} from '../../package.json'
 </script>
 
 <template>
@@ -33,32 +36,32 @@ import {
 			<slot name="main"></slot>
 		</div>
 		<slot name="footer"></slot>
-		<Footer />
+		<Footer :version="version"/>
 	</div>
 </template>
 
 <style>
 .layout-container {
-  width: 80%;
-margin: auto;
+	width: 80%;
+	margin: auto;
 }
 
 .page-layout {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
 }
 
 .page-content {
-  flex-grow: 1;
+	flex-grow: 1;
 }
 
 .links {
-  padding: 0;
+	padding: 0;
 }
 
-.links > li {
-  display: inline-block;
-  padding-right: 1em;
+.links>li {
+	display: inline-block;
+	padding-right: 1em;
 }
 </style>
